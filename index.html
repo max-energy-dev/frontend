@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RPC Frontend</title>
+</head>
+<body>
+  <h1>RPC Frontend</h1>
+  
+  <label for="a">Number A:</label>
+  <input type="number" id="a" /><br />
+
+  <label for="b">Number B:</label>
+  <input type="number" id="b" /><br />
+
+  <button onclick="add()">Add</button>
+  <button onclick="subtract()">Subtract</button>
+  <button onclick="multiply()">Multiply</button>
+  <button onclick="divide()">Divide</button>
+
+  <div id="result"></div>
+
+  <script>
+    function callRPC(method, params) {
+      fetch("http://localhost:5000", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: method,
+          params: params,
+          id: 1
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            console.error(data.error);
+            document.getElementById("result").innerText = "Error: " + data.error.message;
+          } else {
+            document.getElementById("result").innerText = "Result: " + data.result;
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById("result").innerText = "Error: " + error.message;
+        });
+    }
+
+    function add() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      callRPC("add", { a: a, b: b });
+    }
+
+    function subtract() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      callRPC("subtract", { a: a, b: b });
+    }
+
+    function multiply() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      callRPC("multiply", { a: a, b: b });
+    }
+
+    function divide() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      callRPC("divide", { a: a, b: b });
+    }
+  </script>
+</body>
+</html>
